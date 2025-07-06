@@ -8,15 +8,21 @@ import com.example.staggeredgrid.databinding.SubWidgetItem2LayoutBinding
 import com.example.staggeredgrid.domain.model.SubWidgetItem
 import com.example.staggeredgrid.presentation.components.SubWidgetItemCard1
 import com.example.staggeredgrid.presentation.components.SubWidgetItemCard2
+import com.example.staggeredgrid.utils.AppUtils
 
 const val ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_1 = 1
 const val ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_2 = 2
+
 const val ITEM_TYPE_SUB_WIDGET_1 = "sub_widget_item_1"
 const val ITEM_TYPE_SUB_WIDGET_2 = "sub_widget_item_2"
 
 class WidgetAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 	private val dataset = mutableListOf<SubWidgetItem>()
+
+	private val screenWidth by lazy {
+		AppUtils.getScreenWidth()
+	}
 
 	override fun onCreateViewHolder(
 		parent: ViewGroup,
@@ -56,9 +62,25 @@ class WidgetAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 				holder.setUI(data)
 			}
 		}
+
+		adjustLayoutParams(holder, position)
 	}
 
 	override fun getItemCount(): Int = dataset.size
+
+	private fun adjustLayoutParams(
+		holder: RecyclerView.ViewHolder,
+		position: Int
+	) {
+		val layoutParams = holder.itemView.layoutParams
+		layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+		layoutParams.width = when (getItemViewType(position)) {
+			ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_2 -> (screenWidth / 3) * 2 // 2 columns
+			else -> screenWidth / 3                              // 1 column
+		}
+
+		holder.itemView.layoutParams = layoutParams
+	}
 
 	fun updateItems(newDataset: List<SubWidgetItem>?) {
 		if (newDataset.isNullOrEmpty()) {

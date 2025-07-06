@@ -12,13 +12,36 @@ class DataFeeder {
 				""
 			),
 			SubWidgetItem(
-				"sub_widget_item_2",
+				"sub_widget_item_1",
 				"Title 2",
 				"https://cdn.dummyjson.com/recipe-images/1.webp",
 				""
 			),
 			SubWidgetItem(
+				"sub_widget_item_2",
+				"Title 3",
+				"https://cdn.dummyjson.com/recipe-images/1.webp",
+				""
+			)
+		)
+	}
+
+	fun getWidgetsNew(): List<SubWidgetItem> {
+		return mutableListOf<SubWidgetItem>(
+			SubWidgetItem(
 				"sub_widget_item_1",
+				"Title 1",
+				"https://cdn.dummyjson.com/recipe-images/1.webp",
+				""
+			),
+			SubWidgetItem(
+				"sub_widget_item_1",
+				"Title 2",
+				"https://cdn.dummyjson.com/recipe-images/1.webp",
+				""
+			),
+			SubWidgetItem(
+				"sub_widget_item_2",
 				"Title 3",
 				"https://cdn.dummyjson.com/recipe-images/1.webp",
 				""

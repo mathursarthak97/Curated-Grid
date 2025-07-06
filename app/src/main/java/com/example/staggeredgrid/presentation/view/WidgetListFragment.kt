@@ -45,20 +45,23 @@ class WidgetListFragment : Fragment() {
 
 	private fun setUI() {
 		binding.rvWidgets.apply {
-
-			val gridLayoutManager = GridLayoutManager(context, 3).also {
-				it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-					override fun getSpanSize(position: Int): Int {
-						return when (widgetAdapter.getItemViewType(position)) {
-							ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_2 -> 2  // spans 2 columns
-							ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_1 -> 1  // spans 1 column
-							else -> 1
+			layoutManager =
+				GridLayoutManager(
+					context, 2,
+					GridLayoutManager.HORIZONTAL, false
+				).also {
+					it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+						override fun getSpanSize(position: Int): Int {
+							return when (widgetAdapter.getItemViewType(position)) {
+								ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_2 -> 2
+								ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_1 -> 1
+								else -> 1
+							}
 						}
 					}
 				}
-			}
 
-			layoutManager = gridLayoutManager
+			setHasFixedSize(true)
 			addItemDecoration(NoSpaceItemDecoration())
 			adapter = widgetAdapter.also {
 				it.updateItems(widgetListViewModel.getData())
@@ -67,6 +70,8 @@ class WidgetListFragment : Fragment() {
 	}
 
 	companion object {
+		const val TAG = "WidgetListFragment"
+
 		@JvmStatic
 		fun newInstance() = WidgetListFragment()
 	}
