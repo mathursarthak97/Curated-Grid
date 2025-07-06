@@ -23,19 +23,19 @@ class DataFeeder {
 					"sub_widget_item_1",
 					"Title 1",
 					"https://cdn.dummyjson.com/recipe-images/1.webp",
-					""
+					"veg"
 				),
 				SubWidgetItem(
 					"sub_widget_item_1",
 					"Title 2",
 					"https://cdn.dummyjson.com/recipe-images/2.webp",
-					""
+					"non-veg"
 				),
 				SubWidgetItem(
 					"sub_widget_item_2",
 					"Title 3",
 					"https://cdn.dummyjson.com/recipe-images/3.webp",
-					""
+					"non-veg"
 				)
 			),
 			"HORIZONTAL",
@@ -51,19 +51,19 @@ class DataFeeder {
 					"sub_widget_item_1",
 					"Title 1",
 					"https://cdn.dummyjson.com/recipe-images/4.webp",
-					""
+					"egg"
 				),
 				SubWidgetItem(
 					"sub_widget_item_1",
 					"Title 2",
 					"https://cdn.dummyjson.com/recipe-images/5.webp",
-					""
+					"veg"
 				),
 				SubWidgetItem(
 					"sub_widget_item_1",
 					"Title 3",
 					"https://cdn.dummyjson.com/recipe-images/6.webp",
-					""
+					"non-veg"
 				)
 			),
 			"HORIZONTAL",
