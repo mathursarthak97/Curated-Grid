@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.staggeredgrid.databinding.FragmentWidgetListBinding
-import com.example.staggeredgrid.presentation.adapter.ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_1
-import com.example.staggeredgrid.presentation.adapter.ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_2
 import com.example.staggeredgrid.presentation.adapter.WidgetAdapter
 import com.example.staggeredgrid.presentation.utils.NoSpaceItemDecoration
 import com.example.staggeredgrid.presentation.viewmodel.WidgetListViewModel
@@ -45,26 +43,26 @@ class WidgetListFragment : Fragment() {
 
 	private fun setUI() {
 		binding.rvWidgets.apply {
-			layoutManager =
-				GridLayoutManager(
-					context, 2,
-					GridLayoutManager.HORIZONTAL, false
-				).also {
-					it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-						override fun getSpanSize(position: Int): Int {
-							return when (widgetAdapter.getItemViewType(position)) {
-								ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_2 -> 2
-								ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_1 -> 1
-								else -> 1
-							}
+			/*val gridLayoutManager = GridLayoutManager(
+				context, 2,
+				GridLayoutManager.HORIZONTAL, false
+			).also {
+				it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+					override fun getSpanSize(position: Int): Int {
+						return when (widgetAdapter.getItemViewType(position)) {
+							ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_2 -> 2
+							ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_1 -> 1
+							else -> 1
 						}
 					}
 				}
+			}*/
 
+			layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 			setHasFixedSize(true)
 			addItemDecoration(NoSpaceItemDecoration())
 			adapter = widgetAdapter.also {
-				it.updateItems(widgetListViewModel.getData())
+				it.addWidgets(widgetListViewModel.getData())
 			}
 		}
 	}

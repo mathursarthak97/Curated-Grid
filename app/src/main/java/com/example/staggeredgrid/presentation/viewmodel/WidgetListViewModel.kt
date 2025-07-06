@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.staggeredgrid.domain.model.SubWidgetItem
+import com.example.staggeredgrid.domain.model.WidgetItem
 import com.example.staggeredgrid.domain.repository.Repository
 import com.example.staggeredgrid.presentation.utils.DataFeeder
 import com.example.staggeredgrid.utils.Resource
@@ -30,7 +31,7 @@ class WidgetListViewModel constructor(
 		}*/
 	}
 
-	fun getData(): List<SubWidgetItem> {
+	fun getData(): List<WidgetItem> {
 		val dataFeeder = DataFeeder()
 		return dataFeeder.getWidgets()
 	}

@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
 		if (savedInstanceState == null) {
 			supportFragmentManager.beginTransaction()
-				.add(binding.fragmentContainer.id, widgetListFragment)
+				.add(binding.fragmentContainer.id, widgetListFragment, WidgetListFragment.TAG)
 				.commit()
 		}
 	}

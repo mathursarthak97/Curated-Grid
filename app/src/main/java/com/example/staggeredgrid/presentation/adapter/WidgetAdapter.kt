@@ -5,11 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.staggeredgrid.databinding.SubWidgetItem1LayoutBinding
 import com.example.staggeredgrid.databinding.SubWidgetItem2LayoutBinding
+import com.example.staggeredgrid.databinding.WidgetItemLayoutBinding
 import com.example.staggeredgrid.domain.model.SubWidgetItem
+import com.example.staggeredgrid.domain.model.WidgetItem
 import com.example.staggeredgrid.presentation.components.SubWidgetItemCard1
 import com.example.staggeredgrid.presentation.components.SubWidgetItemCard2
+import com.example.staggeredgrid.presentation.components.WidgetItemCard
 import com.example.staggeredgrid.utils.AppUtils
 
+const val ITEM_VIEW_TYPE_WIDGET = 0
 const val ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_1 = 1
 const val ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_2 = 2
 
@@ -18,7 +22,7 @@ const val ITEM_TYPE_SUB_WIDGET_2 = "sub_widget_item_2"
 
 class WidgetAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-	private val dataset = mutableListOf<SubWidgetItem>()
+	private val dataset = mutableListOf<AdapterItem>()
 
 	private val screenWidth by lazy {
 		AppUtils.getScreenWidth()
@@ -30,6 +34,11 @@ class WidgetAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 	): RecyclerView.ViewHolder {
 		val inflater = LayoutInflater.from(parent.context)
 		return when (viewType) {
+			ITEM_VIEW_TYPE_WIDGET -> {
+				val binding = WidgetItemLayoutBinding.inflate(inflater, parent, false)
+				WidgetItemCard(binding)
+			}
+
 			ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_1 -> {
 				val binding = SubWidgetItem1LayoutBinding.inflate(inflater, parent, false)
 				SubWidgetItemCard1(binding)
@@ -52,18 +61,30 @@ class WidgetAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 		holder: RecyclerView.ViewHolder,
 		position: Int
 	) {
-		val data = dataset[position]
+		val item = dataset[position]
+		val data = item.data
+
 		when (holder) {
+			is WidgetItemCard -> {
+				if (data is WidgetItem) {
+					holder.setUI(data)
+				}
+			}
+
 			is SubWidgetItemCard1 -> {
-				holder.setUI(data)
+				if (data is SubWidgetItem) {
+					holder.setUI(data)
+				}
+				adjustLayoutParams(holder, position)
 			}
 
 			is SubWidgetItemCard2 -> {
-				holder.setUI(data)
+				if (data is SubWidgetItem) {
+					holder.setUI(data)
+				}
+				adjustLayoutParams(holder, position)
 			}
 		}
-
-		adjustLayoutParams(holder, position)
 	}
 
 	override fun getItemCount(): Int = dataset.size
@@ -76,39 +97,61 @@ class WidgetAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 		layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
 		layoutParams.width = when (getItemViewType(position)) {
 			ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_2 -> (screenWidth / 3) * 2 // 2 columns
-			else -> screenWidth / 3                              // 1 column
+			ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_1 -> screenWidth / 3 // 1 column
+			else -> screenWidth
 		}
 
 		holder.itemView.layoutParams = layoutParams
 	}
 
-	fun updateItems(newDataset: List<SubWidgetItem>?) {
-		if (newDataset.isNullOrEmpty()) {
+	fun addWidgets(widgets: List<WidgetItem>?) {
+		if (widgets.isNullOrEmpty()) {
 			return
 		}
 
-//		val diffResult = DiffUtil.calculateDiff(
-//			GenericDiffUtil(dataset, newDataset) { oldItemPosition: Int, newItemPosition: Int ->
-//				return@GenericDiffUtil dataset[oldItemPosition].code == newDataset[newItemPosition].code
-//			})
+		val newDataset = mutableListOf<AdapterItem>()
+		for (widget in widgets) {
+			newDataset.add(AdapterItem(ITEM_VIEW_TYPE_WIDGET, widget))
+		}
 
 		dataset.apply {
 			clear()
 			addAll(newDataset)
-//			diffResult.dispatchUpdatesTo(this@RatesAdapter)
 		}
 
 		notifyDataSetChanged()
 	}
 
-	override fun getItemViewType(position: Int): Int {
-		val item = dataset[position]
-		if (item.type == ITEM_TYPE_SUB_WIDGET_1) {
-			return ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_1
-		} else if (item.type == ITEM_TYPE_SUB_WIDGET_2) {
-			return ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_2
+	fun addSubWidgets(subWidgets: List<SubWidgetItem>?) {
+		if (subWidgets.isNullOrEmpty()) {
+			return
 		}
 
-		return ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_1
+		val newDataset = mutableListOf<AdapterItem>()
+		for (subWidget in subWidgets) {
+			val subWidgetType = subWidget.type
+			val itemViewType = if (subWidgetType.equals(ITEM_TYPE_SUB_WIDGET_1, false)) {
+				ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_1
+			} else if (subWidgetType.equals(ITEM_TYPE_SUB_WIDGET_2, false)) {
+				ITEM_VIEW_TYPE_SUB_WIDGET_ITEM_2
+			} else {
+				-1
+			}
+
+			if (itemViewType == -1) {
+				continue
+			}
+
+			newDataset.add(AdapterItem(itemViewType, subWidget))
+		}
+
+		dataset.apply {
+			clear()
+			addAll(newDataset)
+		}
+
+		notifyDataSetChanged()
 	}
+
+	override fun getItemViewType(position: Int): Int = dataset[position].itemViewType
 }
